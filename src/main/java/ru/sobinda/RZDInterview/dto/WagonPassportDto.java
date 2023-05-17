@@ -1,6 +1,7 @@
 package ru.sobinda.RZDInterview.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,6 +14,7 @@ import ru.sobinda.RZDInterview.enums.WagonType;
 @Builder
 @Getter
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@Schema(description = "Информация о паспорте вагона")
 public class WagonPassportDto {
 
     private int number;
