@@ -21,39 +21,45 @@ public class WagonPassportController {
     private final WagonPassportService wagonPassportService;
 
     @GetMapping("id/{id}")
-    @Operation(summary = "Получить список всех WagonPassport")
+    @Operation(summary = "Получить список WagonPassport по id")
     public ResponseEntity<WagonPassportDto> getWagonPassport(
             @Parameter(description = "Уникальный параметр")
             @PathVariable("id") Integer id) {
         var result = wagonPassportService.getWagonPassport(id);
-        return result.map(wagonPassportDto -> new ResponseEntity<>(wagonPassportDto, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.BAD_REQUEST));
+        return result.map(wagonPassportDto -> new ResponseEntity<>(wagonPassportDto, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.BAD_REQUEST));
     }
 
     @GetMapping("all")
+    @Operation(summary = "Получить список всех WagonPassport")
     public ResponseEntity<List<WagonPassportDto>> getAllWagonPassport() {
         var result = wagonPassportService.getAllWagonPassport();
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @PostMapping("add")
+    @Operation(summary = "Добавить новый WagonPassport")
     public ResponseEntity<Void> addWagonPassport(@RequestBody WagonPassportDto wagonPassportDto) {
-        if (wagonPassportService.addWagonPassport(wagonPassportDto))
-            return new ResponseEntity<>(HttpStatus.CREATED);
+        if (wagonPassportService.addWagonPassport(wagonPassportDto)) return new ResponseEntity<>(HttpStatus.CREATED);
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PutMapping("id/{id}")
-    public ResponseEntity<Void> updateWagonPassport(@PathVariable("id") Integer id, @RequestBody WagonPassportDto wagonPassportDto) {
+    @Operation(summary = "Обновить данные WagonPassport по id")
+    public ResponseEntity<Void> updateWagonPassport(
+            @Parameter(description = "Уникальный параметр")
+            @PathVariable("id") Integer id,
+            @RequestBody WagonPassportDto wagonPassportDto) {
         if (wagonPassportService.updateWagonPassport(id, wagonPassportDto))
             return new ResponseEntity<>(HttpStatus.ACCEPTED);
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
+    @Operation(summary = "Удалить данные WagonPassport по id")
     @DeleteMapping("id/{id}")
-    public ResponseEntity<Void> deleteWagonPassport(@PathVariable("id") Integer id) {
-        if (wagonPassportService.deleteWagonPassport(id))
-            return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<Void> deleteWagonPassport(
+            @Parameter(description = "Уникальный параметр")
+            @PathVariable("id") Integer id) {
+        if (wagonPassportService.deleteWagonPassport(id)) return new ResponseEntity<>(HttpStatus.OK);
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 }
