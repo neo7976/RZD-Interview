@@ -1,0 +1,9 @@
+POST http://localhost:8085/wagon_passport/add
+Content-Type: application/json
+
+{
+  "number": 1235,
+  "type": "COVERED1"
+}
+
+###
