@@ -39,7 +39,17 @@ public class WagonPassportEntity {
     private int loadCapacity;
 
     public static WagonPassportEntity addWagonPassport(WagonPassportDto wagonPassportDto) {
-       return WagonPassportEntity.builder()
+        return WagonPassportEntity.builder()
+                .type(wagonPassportDto.getType())
+                .number(wagonPassportDto.getNumber())
+                .loadCapacity(wagonPassportDto.getType().getLoadCapacity())
+                .tareWeight(wagonPassportDto.getType().getTareWeight())
+                .build();
+    }
+
+    public static WagonPassportEntity updateWagonPassport(WagonPassportEntity wagonPassportEntity, WagonPassportDto wagonPassportDto) {
+        return WagonPassportEntity.builder()
+                .id(wagonPassportEntity.getId())
                 .type(wagonPassportDto.getType())
                 .number(wagonPassportDto.getNumber())
                 .loadCapacity(wagonPassportDto.getType().getLoadCapacity())
