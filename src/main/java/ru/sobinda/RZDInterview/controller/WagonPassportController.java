@@ -26,7 +26,10 @@ public class WagonPassportController {
             @Parameter(description = "Уникальный параметр")
             @PathVariable("id") Integer id) {
         var result = wagonPassportService.getWagonPassport(id);
-        return result.map(wagonPassportDto -> new ResponseEntity<>(wagonPassportDto, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.BAD_REQUEST));
+        return result.map(
+                wagonPassportDto -> new ResponseEntity<>(
+                        wagonPassportDto, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.BAD_REQUEST));
     }
 
     @GetMapping("all")
@@ -39,7 +42,8 @@ public class WagonPassportController {
     @PostMapping("add")
     @Operation(summary = "Добавить новый WagonPassport")
     public ResponseEntity<Void> addWagonPassport(@RequestBody WagonPassportDto wagonPassportDto) {
-        if (wagonPassportService.addWagonPassport(wagonPassportDto)) return new ResponseEntity<>(HttpStatus.CREATED);
+        if (wagonPassportService.addWagonPassport(wagonPassportDto))
+            return new ResponseEntity<>(HttpStatus.CREATED);
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
@@ -59,7 +63,8 @@ public class WagonPassportController {
     public ResponseEntity<Void> deleteWagonPassport(
             @Parameter(description = "Уникальный параметр")
             @PathVariable("id") Integer id) {
-        if (wagonPassportService.deleteWagonPassport(id)) return new ResponseEntity<>(HttpStatus.OK);
+        if (wagonPassportService.deleteWagonPassport(id))
+            return new ResponseEntity<>(HttpStatus.OK);
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 }
