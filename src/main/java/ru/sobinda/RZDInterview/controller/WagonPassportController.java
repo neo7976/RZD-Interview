@@ -15,7 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping("wagon_passport/")
 @RequiredArgsConstructor
-@Tag(name = "WagonPassport", description = "CRUD WagonPassport")
+@Tag(name = "Паспорт вагонов", description = "CRUD WagonPassport")
 public class WagonPassportController {
 
     private final WagonPassportService wagonPassportService;
