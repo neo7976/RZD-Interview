@@ -1,8 +1,10 @@
 package ru.sobinda.RZDInterview.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.sobinda.RZDInterview.dto.ScaleDto;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -12,6 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 @Table(name = "scale")
 public class ScaleEntity {
 
@@ -39,4 +42,25 @@ public class ScaleEntity {
 
     @Column(name = "wagon_weight")
     private BigDecimal wagonWeight;
+
+    public static ScaleEntity addScale(ScaleDto scale) {
+        return ScaleEntity.builder()
+                .serialNumber(scale.getSerialNumber())
+                .wagonPassport(scale.getWagonPassport())
+                .nomenclatures(scale.getNomenclatures())
+                .cargoWeight(scale.getCargoWeight())
+                .wagonWeight(BigDecimal.valueOf(scale.getWagonPassport().getTareWeight()))
+                .build();
+    }
+
+    public static ScaleEntity updateStationById(ScaleEntity scaleEntity, ScaleDto scaleDto) {
+        return ScaleEntity.builder()
+                .id(scaleEntity.getId())
+                .serialNumber(scaleDto.getSerialNumber())
+                .wagonPassport(scaleDto.getWagonPassport())
+                .nomenclatures(scaleDto.getNomenclatures())
+                .cargoWeight(scaleDto.getCargoWeight())
+                .wagonWeight(BigDecimal.valueOf(scaleDto.getWagonPassport().getTareWeight()))
+                .build();
+    }
 }

@@ -11,7 +11,6 @@ import ru.sobinda.RZDInterview.entity.DirectoryOfCargoNomenclaturesEntity;
 import ru.sobinda.RZDInterview.entity.ScaleEntity;
 import ru.sobinda.RZDInterview.entity.WagonPassportEntity;
 
-import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
 
