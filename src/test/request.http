@@ -37,3 +37,36 @@ Content-Type: application/json
 ###
 
 
+POST http://localhost:8085/station/add
+Content-Type: application/json
+
+{
+  "number": [
+    "Путь №1",
+    "Путь №2",
+    "Путь №3",
+    "Путь №4"
+  ],
+  "station_name": "Пробная станция для теста"
+}
+
+###
+
+PUT http://localhost:8085/station/id/1
+Content-Type: application/json
+
+{
+  "number": [
+    "Путь №4",
+    "Путь №6",
+    "Путь №101",
+    "Путь №1",
+    "Путь №2",
+    "Путь №3"
+  ],
+  "station_name": "Обновляем станцию"
+}
+
+###
+
+
