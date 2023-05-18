@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Log4j2
-
 public class WagonPassportService {
 
     private final WagonPassportRepository wagonPassportRepository;
