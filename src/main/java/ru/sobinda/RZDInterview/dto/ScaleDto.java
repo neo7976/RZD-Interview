@@ -14,7 +14,6 @@ import ru.sobinda.RZDInterview.entity.WagonPassportEntity;
 import java.math.BigDecimal;
 import java.util.List;
 
-@AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Getter
@@ -27,33 +26,23 @@ public class ScaleDto extends ScaleDtoImp {
 
     private List<DirectoryOfCargoNomenclaturesEntity> nomenclatures;
 
-    public ScaleDto(int serialNumber,
-                    BigDecimal cargoWeight,
-                    BigDecimal wagonWeight,
-                    WagonPassportDto wagonPassport,
-                    List<DirectoryOfCargoNomenclaturesEntity> nomenclatures) {
-        super(serialNumber, cargoWeight, wagonWeight);
+    public ScaleDto(
+            WagonPassportDto wagonPassport,
+            List<DirectoryOfCargoNomenclaturesEntity> nomenclatures
+    ) {
         this.wagonPassport = wagonPassport;
         this.nomenclatures = nomenclatures;
     }
 
-    public static ScaleDto addScale(ScaleEntity scale) {
-//        return ScaleDto.builder()
-////                .serialNumber(scale.getSerialNumber())
-//                .wagonPassport(getWagonPassportDto(scale.getWagonPassport()))
-//                .nomenclatures(scale.getNomenclatures())
-////                .cargoWeight(scale.getCargoWeight())
-////                .wagonWeight(scale.getWagonWeight())
-//                .build();
-
+    public static ScaleDtoImp addScale(ScaleEntity scale) {
         return new ScaleDto(
-                scale.getSerialNumber(),
-                scale.getCargoWeight(),
-                scale.getWagonWeight(),
                 getWagonPassportDto(scale.getWagonPassport()),
-                scale.getNomenclatures());
+                scale.getNomenclatures()
+        )
+                .setSerialNumber(scale.getSerialNumber())
+                .setCargoWeight(scale.getCargoWeight())
+                .setWagonWeight(scale.getWagonWeight());
     }
-
 
     public static WagonPassportDto getWagonPassportDto(WagonPassportEntity wagonPassportEntity) {
         return WagonPassportDto.addWagonPassportDto(wagonPassportEntity);

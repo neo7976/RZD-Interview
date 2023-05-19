@@ -3,6 +3,7 @@ package ru.sobinda.RZDInterview.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.sobinda.RZDInterview.dto.ScaleDto;
+import ru.sobinda.RZDInterview.dto.ScaleDtoImp;
 import ru.sobinda.RZDInterview.entity.ScaleEntity;
 import ru.sobinda.RZDInterview.repository.DirectoryOfCargoNomenclaturesRepository;
 import ru.sobinda.RZDInterview.repository.ScaleRepository;
@@ -19,7 +20,7 @@ public class ScaleService {
     private final DirectoryOfCargoNomenclaturesRepository directory;
     private final WagonPassportRepository wagonPassportService;
 
-    public List<ScaleDto> getAllScale() {
+    public List<ScaleDtoImp> getAllScale() {
         var list = scaleRepository.findAll();
         return list.stream()
                 .map(ScaleDto::addScale)

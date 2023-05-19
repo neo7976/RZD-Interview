@@ -29,4 +29,19 @@ public abstract class ScaleDtoImp {
 
     @JsonProperty("wagon_weight")
     private BigDecimal wagonWeight;
+
+    ScaleDtoImp setSerialNumber(int serialNumber) {
+        this.serialNumber = serialNumber;
+        return this;
+    }
+
+    ScaleDtoImp setCargoWeight(BigDecimal cargoWeight) {
+        this.cargoWeight = cargoWeight;
+        return this;
+    }
+
+    ScaleDtoImp setWagonWeight(BigDecimal wagonWeight) {
+        this.wagonWeight = wagonWeight;
+        return this;
+    }
 }

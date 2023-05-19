@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.sobinda.RZDInterview.dto.DirectoryOfCargoNomenclaturesDto;
 import ru.sobinda.RZDInterview.dto.ScaleDto;
+import ru.sobinda.RZDInterview.dto.ScaleDtoImp;
 import ru.sobinda.RZDInterview.service.ScaleService;
 
 import java.util.List;
@@ -24,7 +25,7 @@ public class ScaleController {
 
     @Operation(summary = "Получить все Вагоны")
     @GetMapping("all")
-    public ResponseEntity<List<ScaleDto>> getAll() {
+    public ResponseEntity<List<ScaleDtoImp>> getAll() {
         var result = scaleService.getAllScale();
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
