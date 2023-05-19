@@ -26,7 +26,7 @@ public class ScaleDto {
     private Integer serialNumber;
 
     @JsonProperty("wagon_number")
-    private WagonPassportEntity wagonPassport;
+    private WagonPassportDto wagonPassport;
 
     private List<DirectoryOfCargoNomenclaturesEntity> nomenclatures;
 
@@ -39,10 +39,15 @@ public class ScaleDto {
     public static ScaleDto addScale(ScaleEntity scale) {
         return ScaleDto.builder()
                 .serialNumber(scale.getSerialNumber())
-                .wagonPassport(scale.getWagonPassport())
+                .wagonPassport(getWagonPassportDto(scale.getWagonPassport()))
                 .nomenclatures(scale.getNomenclatures())
                 .cargoWeight(scale.getCargoWeight())
                 .wagonWeight(scale.getWagonWeight())
                 .build();
+    }
+
+
+    public static WagonPassportDto getWagonPassportDto(WagonPassportEntity wagonPassportEntity) {
+        return WagonPassportDto.addWagonPassportDto(wagonPassportEntity);
     }
 }

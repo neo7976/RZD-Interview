@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.sobinda.RZDInterview.dto.ScaleDto;
+import ru.sobinda.RZDInterview.dto.WagonPassportDto;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -20,7 +21,7 @@ public class ScaleEntity {
 
     /**
      * Список вагонов с атрибутами:
-     * Порядковый номер, Номер вагона, Номенклатура груза, Вес груза в вагоне, Вес вагона)
+     * Порядковый номер, Номер вагона, Номенклатура груза, Вес груза в вагоне, Вес вагона
      */
 
     @Id
@@ -49,13 +50,13 @@ public class ScaleEntity {
     @Column(name = "wagon_weight")
     private BigDecimal wagonWeight;
 
-    public static ScaleEntity addScale(ScaleDto scale) {
+    public static ScaleEntity addScale(ScaleDto scaleDto) {
         return ScaleEntity.builder()
-                .serialNumber(scale.getSerialNumber())
-                .wagonPassport(scale.getWagonPassport())
-                .nomenclatures(scale.getNomenclatures())
-                .cargoWeight(scale.getCargoWeight())
-                .wagonWeight(BigDecimal.valueOf(scale.getWagonPassport().getTareWeight()))
+                .serialNumber(scaleDto.getSerialNumber())
+                .wagonPassport(getWagonPassportEntity(scaleDto.getWagonPassport()))
+                .nomenclatures(scaleDto.getNomenclatures())
+                .cargoWeight(scaleDto.getCargoWeight())
+                .wagonWeight(BigDecimal.valueOf(scaleDto.getWagonPassport().getTareWeight()))
                 .build();
     }
 
@@ -63,10 +64,14 @@ public class ScaleEntity {
         return ScaleEntity.builder()
                 .id(scaleEntity.getId())
                 .serialNumber(scaleDto.getSerialNumber())
-                .wagonPassport(scaleDto.getWagonPassport())
+                .wagonPassport(getWagonPassportEntity(scaleDto.getWagonPassport()))
                 .nomenclatures(scaleDto.getNomenclatures())
                 .cargoWeight(scaleDto.getCargoWeight())
                 .wagonWeight(BigDecimal.valueOf(scaleDto.getWagonPassport().getTareWeight()))
                 .build();
+    }
+
+    public static WagonPassportEntity getWagonPassportEntity(WagonPassportDto wagonPassportDto) {
+        return WagonPassportEntity.addWagonPassport(wagonPassportDto);
     }
 }
