@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.sobinda.RZDInterview.dto.ScaleAddDto;
 import ru.sobinda.RZDInterview.dto.ScaleDto;
 import ru.sobinda.RZDInterview.dto.WagonPassportDto;
 
@@ -50,13 +51,12 @@ public class ScaleEntity {
     @Column(name = "wagon_weight")
     private BigDecimal wagonWeight;
 
-    public static ScaleEntity addScale(ScaleDto scaleDto) {
+    public static ScaleEntity addScale(ScaleAddDto scaleAddDto, WagonPassportEntity wagonPassportEntity) {
         return ScaleEntity.builder()
-                .serialNumber(scaleDto.getSerialNumber())
-                .wagonPassport(getWagonPassportEntity(scaleDto.getWagonPassport()))
-                .nomenclatures(scaleDto.getNomenclatures())
-                .cargoWeight(scaleDto.getCargoWeight())
-                .wagonWeight(BigDecimal.valueOf(scaleDto.getWagonPassport().getTareWeight()))
+                .serialNumber(scaleAddDto.getSerialNumber())
+                .cargoWeight(scaleAddDto.getCargoWeight())
+                .wagonPassport(wagonPassportEntity)
+                .wagonWeight(BigDecimal.valueOf(wagonPassportEntity.getTareWeight()))
                 .build();
     }
 

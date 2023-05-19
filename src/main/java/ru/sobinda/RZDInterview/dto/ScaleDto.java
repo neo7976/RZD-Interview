@@ -14,6 +14,7 @@ import ru.sobinda.RZDInterview.entity.WagonPassportEntity;
 import java.math.BigDecimal;
 import java.util.List;
 
+@AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Getter
@@ -23,25 +24,34 @@ public class ScaleDto extends ScaleDtoImp {
 
     @JsonProperty("wagon_number")
     private WagonPassportDto wagonPassport;
-
     private List<DirectoryOfCargoNomenclaturesEntity> nomenclatures;
 
-    public ScaleDto(
-            WagonPassportDto wagonPassport,
-            List<DirectoryOfCargoNomenclaturesEntity> nomenclatures
-    ) {
-        this.wagonPassport = wagonPassport;
-        this.nomenclatures = nomenclatures;
+    public ScaleDto(int serialNumber, BigDecimal cargoWeight, BigDecimal wagonWeight) {
+        super(serialNumber, cargoWeight, wagonWeight);
     }
 
-    public static ScaleDtoImp addScale(ScaleEntity scale) {
+    public static ScaleDto addScale(ScaleEntity scale) {
         return new ScaleDto(
-                getWagonPassportDto(scale.getWagonPassport()),
-                scale.getNomenclatures()
-        )
-                .setSerialNumber(scale.getSerialNumber())
-                .setCargoWeight(scale.getCargoWeight())
-                .setWagonWeight(scale.getWagonWeight());
+                scale.getSerialNumber(),
+                scale.getCargoWeight(),
+                scale.getWagonWeight())
+                .setWagonPassport(
+                        getWagonPassportDto(scale.getWagonPassport())
+                )
+                .setNomenclatures(
+                        scale.getNomenclatures()
+                );
+
+    }
+
+    private ScaleDto setWagonPassport(WagonPassportDto wagonPassport) {
+        this.wagonPassport = wagonPassport;
+        return this;
+    }
+
+    private ScaleDto setNomenclatures(List<DirectoryOfCargoNomenclaturesEntity> nomenclatures) {
+        this.nomenclatures = nomenclatures;
+        return this;
     }
 
     public static WagonPassportDto getWagonPassportDto(WagonPassportEntity wagonPassportEntity) {

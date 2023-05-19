@@ -3,7 +3,6 @@ package ru.sobinda.RZDInterview.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -15,12 +14,6 @@ import java.math.BigDecimal;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class ScaleDtoImp {
 
-
-//    @JsonProperty("wagon_number")
-//    private WagonPassportDto wagonPassport;
-//
-//    private List<DirectoryOfCargoNomenclaturesEntity> nomenclatures;
-
     @JsonProperty("serial_number")
     private int serialNumber;
 
@@ -29,19 +22,4 @@ public abstract class ScaleDtoImp {
 
     @JsonProperty("wagon_weight")
     private BigDecimal wagonWeight;
-
-    ScaleDtoImp setSerialNumber(int serialNumber) {
-        this.serialNumber = serialNumber;
-        return this;
-    }
-
-    ScaleDtoImp setCargoWeight(BigDecimal cargoWeight) {
-        this.cargoWeight = cargoWeight;
-        return this;
-    }
-
-    ScaleDtoImp setWagonWeight(BigDecimal wagonWeight) {
-        this.wagonWeight = wagonWeight;
-        return this;
-    }
 }
