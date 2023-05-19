@@ -27,19 +27,25 @@ public class ScaleEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    //Порядковый номер
     @Column(name = "serial_number")
     private Integer serialNumber;
 
+    //Номер вагона
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "wagon_number")
     private WagonPassportEntity wagonPassport;
 
-    @ManyToMany(mappedBy = "scale", fetch = FetchType.EAGER)
+    //Список номенклатур товара для одного вагона
+    @OneToMany
+    @JoinColumn(name = "nomenclature_id")
     private List<DirectoryOfCargoNomenclaturesEntity> nomenclatures;
 
+    //Вес груза в вагоне
     @Column(name = "cargo_weight")
     private BigDecimal cargoWeight;
 
+    //Вес вагона
     @Column(name = "wagon_weight")
     private BigDecimal wagonWeight;
 
