@@ -32,9 +32,6 @@ public class DirectoryOfCargoNomenclaturesEntity {
     @Column(name = "shipping_name",unique = true)
     private String shippingName;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<ScaleEntity> scale;
-
     public static DirectoryOfCargoNomenclaturesEntity addDirectoryOfCargoNomenclatures(
             DirectoryOfCargoNomenclaturesDto directory) {
         return DirectoryOfCargoNomenclaturesEntity.builder()
