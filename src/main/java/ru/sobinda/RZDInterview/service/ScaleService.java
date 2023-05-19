@@ -10,6 +10,7 @@ import ru.sobinda.RZDInterview.repository.DirectoryOfCargoNomenclaturesRepositor
 import ru.sobinda.RZDInterview.repository.ScaleRepository;
 import ru.sobinda.RZDInterview.repository.WagonPassportRepository;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,10 +29,18 @@ public class ScaleService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public boolean addScale(ScaleAddDto scaleAddDto) {
         var wagonId = wagonPassportRepository.findById((scaleAddDto.getWagonPassportId()))
-                .orElseThrow(() -> new InvalidRzdException("Такого вагона не существует"));
-        var id = scaleRepository.save(ScaleEntity.addScale(scaleAddDto, wagonId)).getId();
+                .orElseThrow(() -> {
+                    throw new InvalidRzdException("Такого вагона не существует");
+                });
+
+        var listDirectory = directoryRepository.findAllById(scaleAddDto.getNomenclatures());
+        if (listDirectory.isEmpty()) {
+            return false;
+        }
+        var id = scaleRepository.save(ScaleEntity.addScale(scaleAddDto, wagonId, listDirectory)).getId();
         return scaleRepository.existsById(id);
     }
 }

@@ -30,7 +30,7 @@ public class ScaleEntity {
     private Integer id;
 
     //Порядковый номер
-    @Column(name = "serial_number")
+    @Column(name = "serial_number", unique = true)
     private Integer serialNumber;
 
     //Номер вагона
@@ -51,10 +51,13 @@ public class ScaleEntity {
     @Column(name = "wagon_weight")
     private BigDecimal wagonWeight;
 
-    public static ScaleEntity addScale(ScaleAddDto scaleAddDto, WagonPassportEntity wagonPassportEntity) {
+    public static ScaleEntity addScale(ScaleAddDto scaleAddDto,
+                                       WagonPassportEntity wagonPassportEntity,
+                                       List<DirectoryOfCargoNomenclaturesEntity> listDirectory) {
         return ScaleEntity.builder()
                 .serialNumber(scaleAddDto.getSerialNumber())
                 .cargoWeight(scaleAddDto.getCargoWeight())
+                .nomenclatures(listDirectory)
                 .wagonPassport(wagonPassportEntity)
                 .wagonWeight(BigDecimal.valueOf(wagonPassportEntity.getTareWeight()))
                 .build();

@@ -18,14 +18,16 @@ import java.util.List;
 @Getter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Schema(description = "Информация для добавления списка вагонов с атрибутами")
-public class ScaleAddDto extends ScaleDtoImp{
+public class ScaleAddDto {
+
+    @JsonProperty("serial_number")
+    private int serialNumber;
 
     @JsonProperty("wagon_passport_id")
     private int wagonPassportId;
 
     private List<Integer> nomenclatures;
 
-    public ScaleAddDto(int serialNumber, BigDecimal cargoWeight, BigDecimal wagonWeight) {
-        super(serialNumber, cargoWeight, wagonWeight);
-    }
-   }
+    @JsonProperty("cargo_weight")
+    private BigDecimal cargoWeight;
+}
