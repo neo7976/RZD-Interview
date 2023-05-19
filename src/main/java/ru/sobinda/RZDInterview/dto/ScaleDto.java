@@ -20,30 +20,38 @@ import java.util.List;
 @Getter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Schema(description = "Информация о списках вагонов с атрибутами")
-public class ScaleDto {
-
-    @JsonProperty("serial_number")
-    private Integer serialNumber;
+public class ScaleDto extends ScaleDtoImp {
 
     @JsonProperty("wagon_number")
     private WagonPassportDto wagonPassport;
 
     private List<DirectoryOfCargoNomenclaturesEntity> nomenclatures;
 
-    @JsonProperty("cargo_weight")
-    private BigDecimal cargoWeight;
-
-    @JsonProperty("wagon_weight")
-    private BigDecimal wagonWeight;
+    public ScaleDto(int serialNumber,
+                    BigDecimal cargoWeight,
+                    BigDecimal wagonWeight,
+                    WagonPassportDto wagonPassport,
+                    List<DirectoryOfCargoNomenclaturesEntity> nomenclatures) {
+        super(serialNumber, cargoWeight, wagonWeight);
+        this.wagonPassport = wagonPassport;
+        this.nomenclatures = nomenclatures;
+    }
 
     public static ScaleDto addScale(ScaleEntity scale) {
-        return ScaleDto.builder()
-                .serialNumber(scale.getSerialNumber())
-                .wagonPassport(getWagonPassportDto(scale.getWagonPassport()))
-                .nomenclatures(scale.getNomenclatures())
-                .cargoWeight(scale.getCargoWeight())
-                .wagonWeight(scale.getWagonWeight())
-                .build();
+//        return ScaleDto.builder()
+////                .serialNumber(scale.getSerialNumber())
+//                .wagonPassport(getWagonPassportDto(scale.getWagonPassport()))
+//                .nomenclatures(scale.getNomenclatures())
+////                .cargoWeight(scale.getCargoWeight())
+////                .wagonWeight(scale.getWagonWeight())
+//                .build();
+
+        return new ScaleDto(
+                scale.getSerialNumber(),
+                scale.getCargoWeight(),
+                scale.getWagonWeight(),
+                getWagonPassportDto(scale.getWagonPassport()),
+                scale.getNomenclatures());
     }
 
 
