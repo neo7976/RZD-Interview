@@ -62,4 +62,13 @@ public class ScaleController {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
+    @Operation(summary = "Удалить атрибуты вагона по id")
+    @DeleteMapping("id/{id}")
+    public ResponseEntity<Void> deleteScaleById(
+            @Parameter(description = "Уникальный параметр")
+            @PathVariable("id") Integer id) {
+        if (scaleService.deleteScaleById(id))
+            return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    }
 }

@@ -83,4 +83,13 @@ public class ScaleService {
                     throw new InvalidRzdException("Такого вагона не существует");
                 });
     }
+
+    @Transactional
+    public boolean deleteScaleById(Integer id) {
+        var exist = directoryRepository.existsById(id);
+        if (exist) {
+            directoryRepository.deleteById(id);
+        }
+        return exist;
+    }
 }
