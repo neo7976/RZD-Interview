@@ -4,8 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.sobinda.RZDInterview.dto.ScaleAddDto;
-import ru.sobinda.RZDInterview.dto.ScaleDto;
+import ru.sobinda.RZDInterview.dto.ScaleCreateDto;
 import ru.sobinda.RZDInterview.dto.WagonPassportDto;
 
 import javax.persistence.*;
@@ -51,26 +50,29 @@ public class ScaleEntity {
     @Column(name = "wagon_weight")
     private BigDecimal wagonWeight;
 
-    public static ScaleEntity addScale(ScaleAddDto scaleAddDto,
+    public static ScaleEntity addScale(ScaleCreateDto scaleCreateDto,
                                        WagonPassportEntity wagonPassportEntity,
                                        List<DirectoryOfCargoNomenclaturesEntity> listDirectory) {
         return ScaleEntity.builder()
-                .serialNumber(scaleAddDto.getSerialNumber())
-                .cargoWeight(scaleAddDto.getCargoWeight())
+                .serialNumber(scaleCreateDto.getSerialNumber())
+                .cargoWeight(scaleCreateDto.getCargoWeight())
                 .nomenclatures(listDirectory)
                 .wagonPassport(wagonPassportEntity)
                 .wagonWeight(BigDecimal.valueOf(wagonPassportEntity.getTareWeight()))
                 .build();
     }
 
-    public static ScaleEntity updateStationById(ScaleEntity scaleEntity, ScaleDto scaleDto) {
+    public static ScaleEntity updateScaleById(ScaleEntity scaleEntity,
+                                              ScaleCreateDto scaleDto,
+                                              WagonPassportEntity wagonPassportEntity,
+                                              List<DirectoryOfCargoNomenclaturesEntity> listDirectory) {
         return ScaleEntity.builder()
                 .id(scaleEntity.getId())
                 .serialNumber(scaleDto.getSerialNumber())
-                .wagonPassport(getWagonPassportEntity(scaleDto.getWagonPassport()))
-                .nomenclatures(scaleDto.getNomenclatures())
+                .wagonPassport(wagonPassportEntity)
+                .nomenclatures(listDirectory)
                 .cargoWeight(scaleDto.getCargoWeight())
-                .wagonWeight(BigDecimal.valueOf(scaleDto.getWagonPassport().getTareWeight()))
+                .wagonWeight(BigDecimal.valueOf(wagonPassportEntity.getTareWeight()))
                 .build();
     }
 

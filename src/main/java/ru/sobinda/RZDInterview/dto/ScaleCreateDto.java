@@ -18,7 +18,7 @@ import java.util.List;
 @Getter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Schema(description = "Информация для добавления списка вагонов с атрибутами")
-public class ScaleAddDto {
+public class ScaleCreateDto {
 
     @JsonProperty("serial_number")
     private int serialNumber;
@@ -30,4 +30,5 @@ public class ScaleAddDto {
 
     @JsonProperty("cargo_weight")
     private BigDecimal cargoWeight;
+
 }
