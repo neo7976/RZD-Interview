@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import ru.sobinda.RZDInterview.dto.DirectoryOfCargoNomenclaturesDto;
 import ru.sobinda.RZDInterview.service.DirectoryOfCargoNomenclaturesService;
@@ -23,6 +24,7 @@ public class DirectoryOfCargoNomenclaturesController {
     private final DirectoryOfCargoNomenclaturesService directoryService;
 
     @GetMapping("id/{id}")
+    @Secured({"ROLE_ADMIN", "ROLE_USER", "ROLE_GUEST"})
     @Operation(summary = "Получить список Номенклатуры товара по id")
     public ResponseEntity<DirectoryOfCargoNomenclaturesDto> getNomenclatureById(
             @Parameter(description = "Уникальный параметр")
@@ -36,6 +38,7 @@ public class DirectoryOfCargoNomenclaturesController {
     }
 
     @GetMapping("code/{code}")
+    @Secured({"ROLE_ADMIN", "ROLE_USER", "ROLE_GUEST"})
     @Operation(summary = "Получить список Номенклатуры товара по коду")
     public ResponseEntity<DirectoryOfCargoNomenclaturesDto> getNomenclatureByCode(
             @Parameter(description = "Код продукта")
@@ -49,6 +52,7 @@ public class DirectoryOfCargoNomenclaturesController {
     }
 
     @GetMapping("shipping_name/{shipping_name}")
+    @Secured({"ROLE_ADMIN", "ROLE_USER", "ROLE_GUEST"})
     @Operation(summary = "Получить список Номенклатуры товара по Имени продукта")
     public ResponseEntity<DirectoryOfCargoNomenclaturesDto> getNomenclatureByName(
             @Parameter(description = "Наименование продукта")
@@ -62,6 +66,7 @@ public class DirectoryOfCargoNomenclaturesController {
     }
 
     @GetMapping("all")
+    @Secured({"ROLE_ADMIN", "ROLE_USER", "ROLE_GUEST"})
     @Operation(summary = "Получить список всех Номенклатуры товаров")
     public ResponseEntity<List<DirectoryOfCargoNomenclaturesDto>> getAllNomenclatures() {
         log.info("Запрос на получение всех позиций");
@@ -70,6 +75,7 @@ public class DirectoryOfCargoNomenclaturesController {
     }
 
     @PostMapping("add")
+    @Secured({"ROLE_ADMIN", "ROLE_USER"})
     @Operation(summary = "Добавить новую Номенклатуру товара")
     public ResponseEntity<Void> addNomenclature(@RequestBody DirectoryOfCargoNomenclaturesDto directory) {
         log.info("Запрос на добавление товара: {}", directory.getShippingName());
@@ -79,6 +85,7 @@ public class DirectoryOfCargoNomenclaturesController {
     }
 
     @PutMapping("id/{id}")
+    @Secured({"ROLE_ADMIN", "ROLE_USER"})
     @Operation(summary = "Обновить данные Номенклатуры товара по id")
     public ResponseEntity<Void> updateNomenclatureById(
             @Parameter(description = "Уникальный параметр")
@@ -92,6 +99,7 @@ public class DirectoryOfCargoNomenclaturesController {
 
     @Operation(summary = "Удалить данные Номенклатуры товара по id")
     @DeleteMapping("id/{id}")
+    @Secured({"ROLE_ADMIN"})
     public ResponseEntity<Void> deleteNomenclatureById(
             @Parameter(description = "Уникальный параметр")
             @PathVariable("id") Integer id) {
