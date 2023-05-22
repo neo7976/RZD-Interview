@@ -254,8 +254,25 @@ where id = 3;
 
 ```
 
+## 5. Создание порядка номерации вагонов при добавление в состав
 
-## 5. CRUD операции для Контролеров написаны в следующем стиле:
+```java
+    @Transactional
+    @Modifying
+    @Query(value = "UPDATE scale " +
+            "SET serial_number = COALESCE((SELECT MAX(serial_number) FROM scale WHERE scale_id = :scale_id), 0) + CAST(row_number AS int) " +
+            "FROM ( " +
+            "  SELECT id, ROW_NUMBER() OVER (ORDER BY id) AS row_number " +
+            "  FROM scale " +
+            "  WHERE scale_id = :scale_id AND serial_number IS NULL " +
+            ") AS subquery " +
+            "WHERE scale.id = subquery.id", nativeQuery = true)
+    void updateSerialNumber(@Param("scale_id") Integer scaleId);
+
+```
+
+
+## 6. CRUD операции для Контролеров написаны в следующем стиле:
 
 ```java
 
@@ -335,7 +352,7 @@ public class WagonPassportController {
 }
 ```
 
-## 6. Тесты для Контролеров написаны в следующем стиле:
+## 7. Тесты для Контролеров написаны в следующем стиле:
 
 ```java
 @ExtendWith(MockitoExtension.class)
@@ -459,7 +476,7 @@ class WagonPassportControllerTest {
 
 ```
 
-## 7. Тесты для Сервисов написаны в следующем стиле:
+## 8. Тесты для Сервисов написаны в следующем стиле:
 
 ```java
 

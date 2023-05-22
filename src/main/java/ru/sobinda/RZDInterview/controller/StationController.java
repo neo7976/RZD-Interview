@@ -21,14 +21,13 @@ public class StationController {
 
     private final StationService stationService;
 
-
     @GetMapping("id/{id}")
     @Secured({"ROLE_ADMIN", "ROLE_USER", "ROLE_GUEST"})
     @Operation(summary = "Получить список Станций по id")
-    public ResponseEntity<StationDto> getWagonPassport(
+    public ResponseEntity<StationDto> getStationById(
             @Parameter(description = "Уникальный параметр")
             @PathVariable("id") Integer id) {
-        var result = stationService.getStation(id);
+        var result = stationService.getStationById(id);
         return result.map(
                         stationDto -> new ResponseEntity<>(
                                 stationDto, HttpStatus.OK))
@@ -38,8 +37,8 @@ public class StationController {
     @Operation(summary = "Получить все станции")
     @Secured({"ROLE_ADMIN", "ROLE_USER", "ROLE_GUEST"})
     @GetMapping("all")
-    public ResponseEntity<List<StationDto>> getAll() {
-        var result = stationService.getAllWagonPassport();
+    public ResponseEntity<List<StationDto>> getAllStations() {
+        var result = stationService.getAllStations();
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
