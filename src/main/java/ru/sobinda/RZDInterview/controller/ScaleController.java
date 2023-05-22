@@ -57,6 +57,7 @@ public class ScaleController {
             @Parameter(description = "Уникальный параметр")
             @PathVariable("id") Integer id,
             @RequestBody ScaleCreateDto updateScaleDto) {
+        log.info("Запрос на изменение вагона с атрибутами по {}: {}", "id", id);
         if (scaleService.updateScaleById(id, updateScaleDto))
             return new ResponseEntity<>(HttpStatus.ACCEPTED);
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
@@ -67,6 +68,7 @@ public class ScaleController {
     public ResponseEntity<Void> deleteScaleById(
             @Parameter(description = "Уникальный параметр")
             @PathVariable("id") Integer id) {
+        log.info("Запрос на удаление вагона с атрибутами по {}: {}", "id", id);
         if (scaleService.deleteScaleById(id))
             return new ResponseEntity<>(HttpStatus.OK);
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);

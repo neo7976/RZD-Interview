@@ -69,6 +69,15 @@ public class ScaleService {
         return item;
     }
 
+    @Transactional
+    public boolean deleteScaleById(Integer id) {
+        var exist = scaleRepository.existsById(id);
+        if (exist) {
+            scaleRepository.deleteById(id);
+        }
+        return exist;
+    }
+
     private List<DirectoryOfCargoNomenclaturesEntity> getNomenclaturesEntities(ScaleCreateDto scaleCreateDto) {
         var listDirectory = directoryRepository.findAllById(scaleCreateDto.getNomenclatures());
         if (listDirectory.isEmpty()) {
@@ -82,14 +91,5 @@ public class ScaleService {
                 .orElseThrow(() -> {
                     throw new InvalidRzdException("Такого вагона не существует");
                 });
-    }
-
-    @Transactional
-    public boolean deleteScaleById(Integer id) {
-        var exist = directoryRepository.existsById(id);
-        if (exist) {
-            directoryRepository.deleteById(id);
-        }
-        return exist;
     }
 }
