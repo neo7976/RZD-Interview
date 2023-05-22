@@ -7,21 +7,18 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.sobinda.RZDInterview.dto.StationDto;
-import ru.sobinda.RZDInterview.dto.WagonPassportDto;
 import ru.sobinda.RZDInterview.entity.StationEntity;
-import ru.sobinda.RZDInterview.entity.WagonPassportEntity;
-import ru.sobinda.RZDInterview.enums.WagonType;
 import ru.sobinda.RZDInterview.repository.StationRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class StationServiceTest {
