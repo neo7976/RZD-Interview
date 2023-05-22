@@ -1,4 +1,6 @@
-## 1. Docker-compose для запуска БД
+## 1. Запуск проекта
+
+- Для сборки образа проекта используется следующий docker-compose:
 
 ```yaml
 version: "3.8"
@@ -16,9 +18,39 @@ services:
     volumes:
       - ./postgresql/init.sql:/docker-entrypoint-initdb.d/init.sql
 
-```
+  rzd-service:
+    depends_on:
+      - zrd-postgres
+    build: /
+    container_name: "rzd-service"
+    ports:
+      - 8085:8085
+    environment:
+      - POSTGRES_HOST=zrd-postgres
+      - POSTGRES_DB=rzd-postgres
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_PORT=5432
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=validate
+    restart: on-failure
 
-- Для запуска используем `docker-compose up`
+```
+1. Первым делом нам надо собрать jar архивы с нашими spring boot приложениями. Для этого в терминале в корне нашего проект выполните команду:
+
+Для gradle: `./gradlew clean build` (если пишет Permission denied тогда сначала выполните `chmod +x ./gradlew`)
+
+- После успешной сборки в папке будет находиться jar файл:`RZD-Interview-0.0.1-SNAPSHOT.jar`;
+- В терминале выполнить команду по сборке images и containers: ```docker-compose up```;
+- В докере запустятся 2 приложения:
+    - rzd-service, Java 11 на порту: ```http://localhost:8085```;
+    - zrd-postgres на порту: ```http://localhost:5432```;
+- Получаем следующие образы, если правильно проделали шаги запуска:
+  ![Swagger5](src/main/resources/imgs/Screenshot_5.png)
+
+
+### Завершение работы
+- Выход из приложения: в терминале нажать "Ctrl+C"
+- Удаление Docker контейнера: ```docker-compose down```
 
 ## 2. Авторизация
 
@@ -34,7 +66,7 @@ Olga    -   Olga1234    ADMIN
 
 ## 3. Настройка OpenAPI definition
 
-- Для доступа требуется перейти по следующем ссылкам
+- Для доступа требуется перейти по одной из следующих ссылок и авторизоваться в системе *(см. пункт 2)*.
 
 http://localhost:8085/swagger-ui/index.html
 
