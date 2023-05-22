@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import ru.sobinda.RZDInterview.dto.StationDto;
 import ru.sobinda.RZDInterview.service.StationService;
@@ -22,6 +23,7 @@ public class StationController {
 
 
     @GetMapping("id/{id}")
+    @Secured({"ROLE_ADMIN", "ROLE_USER", "ROLE_GUEST"})
     @Operation(summary = "Получить список Станций по id")
     public ResponseEntity<StationDto> getWagonPassport(
             @Parameter(description = "Уникальный параметр")
@@ -34,6 +36,7 @@ public class StationController {
     }
 
     @Operation(summary = "Получить все станции")
+    @Secured({"ROLE_ADMIN", "ROLE_USER", "ROLE_GUEST"})
     @GetMapping("all")
     public ResponseEntity<List<StationDto>> getAll() {
         var result = stationService.getAllWagonPassport();
@@ -41,6 +44,7 @@ public class StationController {
     }
 
     @PostMapping("add")
+    @Secured({"ROLE_ADMIN", "ROLE_USER"})
     @Operation(summary = "Добавить новую Станцию")
     public ResponseEntity<Void> addStation(@RequestBody StationDto stationDto) {
         if (stationService.addStation(stationDto))
@@ -49,6 +53,7 @@ public class StationController {
     }
 
     @PutMapping("id/{id}")
+    @Secured({"ROLE_ADMIN", "ROLE_USER"})
     @Operation(summary = "Обновить данные Станции по id")
     public ResponseEntity<Void> updateStation(
             @Parameter(description = "Уникальный параметр")
@@ -61,6 +66,7 @@ public class StationController {
 
     @Operation(summary = "Удалить данные Станции по id")
     @DeleteMapping("id/{id}")
+    @Secured({"ROLE_ADMIN"})
     public ResponseEntity<Void> deleteStation(
             @Parameter(description = "Уникальный параметр")
             @PathVariable("id") Integer id) {

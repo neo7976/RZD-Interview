@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import ru.sobinda.RZDInterview.dto.fullscale.FullScaleCreateDto;
 import ru.sobinda.RZDInterview.dto.fullscale.FullScaleDto;
@@ -24,6 +25,7 @@ public class FullScaleController {
     private final FullScaleService fullScaleService;
 
     @Operation(summary = "Получить все составы поездов")
+    @Secured({"ROLE_ADMIN", "ROLE_USER", "ROLE_GUEST"})
     @GetMapping("all")
     public ResponseEntity<List<FullScaleDto>> getAll() {
         var result = fullScaleService.getAllFullScale();
@@ -31,6 +33,7 @@ public class FullScaleController {
     }
 
     @GetMapping("id/{id}")
+    @Secured({"ROLE_ADMIN", "ROLE_USER", "ROLE_GUEST"})
     @Operation(summary = "Получить поезд с составами по id")
     public ResponseEntity<FullScaleDto> getFullScaleById(
             @Parameter(description = "Уникальный параметр")
@@ -43,6 +46,7 @@ public class FullScaleController {
     }
 
     @PostMapping("add")
+    @Secured({"ROLE_ADMIN", "ROLE_USER"})
     @Operation(summary = "Добавить новый поезд с составами")
     public ResponseEntity<Void> addFullScale(@RequestBody FullScaleCreateDto fullScaleDto) {
         log.info("Запрос на добавление нового поезда: {}", fullScaleDto.getCompositionNumber());
@@ -52,6 +56,7 @@ public class FullScaleController {
     }
 
     @PutMapping("id/{id}")
+    @Secured({"ROLE_ADMIN", "ROLE_USER"})
     @Operation(summary = "Обновить поезд с составами по id")
     public ResponseEntity<Void> updateFullScale(
             @Parameter(description = "Уникальный параметр")
@@ -65,6 +70,7 @@ public class FullScaleController {
 
     @Operation(summary = "Удалить поезд с составами по id")
     @DeleteMapping("id/{id}")
+    @Secured({"ROLE_ADMIN"})
     public ResponseEntity<Void> deleteFullScaleById(
             @Parameter(description = "Уникальный параметр")
             @PathVariable("id") Integer id) {
