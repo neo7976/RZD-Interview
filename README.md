@@ -335,22 +335,147 @@ public class WagonPassportController {
 }
 ```
 
-## 6. Тесты для контролеров написаны в следующем стиле:
+## 6. Тесты для Контролеров написаны в следующем стиле:
 
 ```java
 @ExtendWith(MockitoExtension.class)
 class WagonPassportControllerTest {
 
-    @Mock
-    WagonPassportService wagonPassportService;
+  @Mock
+  WagonPassportService wagonPassportService;
+
+  @InjectMocks
+  WagonPassportController wagonPassportController;
+  private final int ID = 1;
+  private final int NUMBER = 1111;
+  WagonPassportDto wagonPassportDto;
+
+
+
+  @BeforeEach
+  void setUp() {
+    System.out.println(Strings.repeat("-", 100));
+    System.out.println("Начало теста");
+    wagonPassportDto = WagonPassportDto.builder()
+            .number(NUMBER)
+            .type(WagonType.COVERED1)
+            .build();
+  }
+
+  @AfterEach
+  void tearDown() {
+    wagonPassportDto = null;
+    System.out.println("Окончание теста");
+    System.out.println(Strings.repeat("-", 100));
+  }
+
+  @Test
+  void getWagonPassportOk() {
+    when(wagonPassportService.getWagonPassport(ID))
+            .thenReturn(Optional.of(wagonPassportDto));
+    var result = wagonPassportController.getWagonPassport(ID);
+    assertEquals(new ResponseEntity<>(wagonPassportDto,HttpStatus.OK), result);
+  }
+  @Test
+  void getWagonPassportBad() {
+    when(wagonPassportService.getWagonPassport(ID))
+            .thenReturn(Optional.empty());
+    var result = wagonPassportController.getWagonPassport(ID);
+    assertEquals( new ResponseEntity<>(HttpStatus.BAD_REQUEST), result);
+  }
+
+
+  @Test
+  void getWagonPassportByNumberOk() {
+    when(wagonPassportService.getWagonPassportByNumber(NUMBER))
+            .thenReturn(Optional.of(wagonPassportDto));
+    var result = wagonPassportController.getWagonPassportByNumber(NUMBER);
+    assertEquals(new ResponseEntity<>(wagonPassportDto,HttpStatus.OK), result);
+  }
+
+  @Test
+  void getWagonPassportByNumberBad() {
+    when(wagonPassportService.getWagonPassportByNumber(NUMBER))
+            .thenReturn(Optional.empty());
+    var result = wagonPassportController.getWagonPassportByNumber(NUMBER);
+    assertEquals( new ResponseEntity<>(HttpStatus.BAD_REQUEST), result);
+  }
+
+  @Test
+  void getAllWagonPassportOk() {
+    when(wagonPassportService.getAllWagonPassport())
+            .thenReturn(List.of(wagonPassportDto));
+    var result = wagonPassportController.getAllWagonPassport();
+    assertEquals(new ResponseEntity<>(List.of(wagonPassportDto),HttpStatus.OK), result);
+  }
+
+  @Test
+  void addWagonPassportOk() {
+    when(wagonPassportService.addWagonPassport(wagonPassportDto))
+            .thenReturn(true);
+    var result = wagonPassportController.addWagonPassport(wagonPassportDto);
+    assertEquals(new ResponseEntity<>(HttpStatus.CREATED), result);
+  }
+
+  @Test
+  void addWagonPassportBad() {
+    when(wagonPassportService.addWagonPassport(wagonPassportDto))
+            .thenReturn(false);
+    var result = wagonPassportController.addWagonPassport(wagonPassportDto);
+    assertEquals(new ResponseEntity<>(HttpStatus.NOT_FOUND), result);
+  }
+
+  @Test
+  void updateWagonPassportOk() {
+    when(wagonPassportService.updateWagonPassport(ID, wagonPassportDto))
+            .thenReturn(true);
+    var result = wagonPassportController.updateWagonPassport(ID, wagonPassportDto);
+    assertEquals(new ResponseEntity<>(HttpStatus.ACCEPTED), result);
+  }
+  @Test
+  void updateWagonPassportBad() {
+    when(wagonPassportService.updateWagonPassport(ID, wagonPassportDto))
+            .thenReturn(false);
+    var result = wagonPassportController.updateWagonPassport(ID, wagonPassportDto);
+    assertEquals(new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED), result);
+  }
+
+  @Test
+  void deleteWagonPassportOk() {
+    when(wagonPassportService.deleteWagonPassport(ID))
+            .thenReturn(true);
+    var result = wagonPassportController.deleteWagonPassport(ID);
+    assertEquals(new ResponseEntity<>(HttpStatus.OK), result);
+  }
+
+  @Test
+  void deleteWagonPassportBad() {
+    when(wagonPassportService.deleteWagonPassport(ID))
+            .thenReturn(false);
+    var result = wagonPassportController.deleteWagonPassport(ID);
+    assertEquals(new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED), result);
+  }
+}
+
+```
+
+## 7. Тесты для Сервисов написаны в следующем стиле:
+
+```java
+
+@ExtendWith(MockitoExtension.class)
+class WagonPassportServiceTest {
 
     @InjectMocks
-    WagonPassportController wagonPassportController;
+    WagonPassportService wagonPassportService;
+
+    @Mock
+    WagonPassportRepository wagonPassportRepository;
+
     private final int ID = 1;
     private final int NUMBER = 1111;
     WagonPassportDto wagonPassportDto;
-
-
+    WagonPassportEntity wagonPassportEntity;
 
     @BeforeEach
     void setUp() {
@@ -358,91 +483,67 @@ class WagonPassportControllerTest {
         System.out.println("Начало теста");
         wagonPassportDto = WagonPassportDto.builder()
                 .number(NUMBER)
+                .loadCapacity(WagonType.COVERED1.getLoadCapacity())
+                .tareWeight(WagonType.COVERED1.getTareWeight())
                 .type(WagonType.COVERED1)
                 .build();
+
+        wagonPassportEntity = WagonPassportEntity.addWagonPassport(wagonPassportDto);
     }
 
     @AfterEach
     void tearDown() {
         wagonPassportDto = null;
+        wagonPassportEntity = null;
         System.out.println("Окончание теста");
         System.out.println(Strings.repeat("-", 100));
     }
 
     @Test
     void getWagonPassportOk() {
-        when(wagonPassportService.getWagonPassport(ID)).thenReturn(Optional.of(wagonPassportDto));
-        var result = wagonPassportController.getWagonPassport(ID);
-        assertEquals(new ResponseEntity<>(wagonPassportDto,HttpStatus.OK), result);
-    }
-    @Test
-    void getWagonPassportBad() {
-        when(wagonPassportService.getWagonPassport(ID)).thenReturn(Optional.empty());
-        var result = wagonPassportController.getWagonPassport(ID);
-        assertEquals( new ResponseEntity<>(HttpStatus.BAD_REQUEST), result);
+        when(wagonPassportRepository.existsById(ID))
+                .thenReturn(true);
+        when(wagonPassportRepository.findById(ID))
+                .thenReturn(Optional.of(wagonPassportEntity));
+
+        var result = wagonPassportService.getWagonPassport(ID);
+        Assertions.assertEquals(Optional.of(wagonPassportDto), result);
     }
 
+    @Test
+    void getWagonPassportBad() {
+        when(wagonPassportRepository.existsById(ID))
+                .thenReturn(false);
+
+        var result = wagonPassportService.getWagonPassport(ID);
+        Assertions.assertEquals(Optional.empty(), result);
+    }
 
     @Test
     void getWagonPassportByNumberOk() {
-        when(wagonPassportService.getWagonPassportByNumber(NUMBER)).thenReturn(Optional.of(wagonPassportDto));
-        var result = wagonPassportController.getWagonPassportByNumber(NUMBER);
-        assertEquals(new ResponseEntity<>(wagonPassportDto,HttpStatus.OK), result);
+        when(wagonPassportRepository.existsByNumber(NUMBER))
+                .thenReturn(true);
+        when(wagonPassportRepository.findByNumber(NUMBER))
+                .thenReturn(Optional.of(wagonPassportEntity));
+        var result = wagonPassportService.getWagonPassportByNumber(NUMBER);
+        assertEquals(Optional.of(wagonPassportDto), result);
     }
 
     @Test
     void getWagonPassportByNumberBad() {
-        when(wagonPassportService.getWagonPassportByNumber(NUMBER)).thenReturn(Optional.empty());
-        var result = wagonPassportController.getWagonPassportByNumber(NUMBER);
-        assertEquals( new ResponseEntity<>(HttpStatus.BAD_REQUEST), result);
+        when(wagonPassportRepository.existsByNumber(NUMBER))
+                .thenReturn(false);
+        var result = wagonPassportService.getWagonPassportByNumber(NUMBER);
+        assertEquals(Optional.empty(), result);
     }
 
     @Test
-    void getAllWagonPassportOk() {
-        when(wagonPassportService.getAllWagonPassport()).thenReturn(List.of(wagonPassportDto));
-        var result = wagonPassportController.getAllWagonPassport();
-        assertEquals(new ResponseEntity<>(List.of(wagonPassportDto),HttpStatus.OK), result);
-    }
+    void getAllWagonPassport() {
+        when(wagonPassportRepository.findAll())
+                .thenReturn(List.of(wagonPassportEntity));
 
-    @Test
-    void addWagonPassportOk() {
-        when(wagonPassportService.addWagonPassport(wagonPassportDto)).thenReturn(true);
-        var result = wagonPassportController.addWagonPassport(wagonPassportDto);
-        assertEquals(new ResponseEntity<>(HttpStatus.CREATED), result);
-    }
-
-    @Test
-    void addWagonPassportBad() {
-        when(wagonPassportService.addWagonPassport(wagonPassportDto)).thenReturn(false);
-        var result = wagonPassportController.addWagonPassport(wagonPassportDto);
-        assertEquals(new ResponseEntity<>(HttpStatus.NOT_FOUND), result);
-    }
-
-    @Test
-    void updateWagonPassportOk() {
-        when(wagonPassportService.updateWagonPassport(ID, wagonPassportDto)).thenReturn(true);
-        var result = wagonPassportController.updateWagonPassport(ID, wagonPassportDto);
-        assertEquals(new ResponseEntity<>(HttpStatus.ACCEPTED), result);
-    }
-    @Test
-    void updateWagonPassportBad() {
-        when(wagonPassportService.updateWagonPassport(ID, wagonPassportDto)).thenReturn(false);
-        var result = wagonPassportController.updateWagonPassport(ID, wagonPassportDto);
-        assertEquals(new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED), result);
-    }
-
-    @Test
-    void deleteWagonPassportOk() {
-        when(wagonPassportService.deleteWagonPassport(ID)).thenReturn(true);
-        var result = wagonPassportController.deleteWagonPassport(ID);
-        assertEquals(new ResponseEntity<>(HttpStatus.OK), result);
-    }
-
-    @Test
-    void deleteWagonPassportBad() {
-        when(wagonPassportService.deleteWagonPassport(ID)).thenReturn(false);
-        var result = wagonPassportController.deleteWagonPassport(ID);
-        assertEquals(new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED), result);
+        var result = wagonPassportService.getAllWagonPassport();
+        assertEquals(List.of(wagonPassportDto), result);
     }
 }
 
