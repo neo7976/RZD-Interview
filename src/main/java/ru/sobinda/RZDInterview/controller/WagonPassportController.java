@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.sobinda.RZDInterview.dto.WagonPassportDto;
 import ru.sobinda.RZDInterview.service.WagonPassportService;
-
 import java.util.List;
 
 @RestController
@@ -29,6 +28,18 @@ public class WagonPassportController {
         return result.map(
                 wagonPassportDto -> new ResponseEntity<>(
                         wagonPassportDto, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.BAD_REQUEST));
+    }
+
+    @GetMapping("number/{number}")
+    @Operation(summary = "Получить список WagonPassport по номеру")
+    public ResponseEntity<WagonPassportDto> getWagonPassportByNumber(
+            @Parameter(description = "Номер вагона")
+            @PathVariable("number") int number) {
+        var result = wagonPassportService.getWagonPassportByNumber(number);
+        return result.map(
+                        wagonPassportDto -> new ResponseEntity<>(
+                                wagonPassportDto, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.BAD_REQUEST));
     }
 

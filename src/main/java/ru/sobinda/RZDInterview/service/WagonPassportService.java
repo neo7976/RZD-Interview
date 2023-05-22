@@ -27,6 +27,17 @@ public class WagonPassportService {
         return Optional.empty();
     }
 
+
+
+    public Optional<WagonPassportDto> getWagonPassportByNumber(int number) {
+        var exist = wagonPassportRepository.existsByNumber(number);
+        if (exist) {
+            return wagonPassportRepository.findByNumber(number)
+                    .map(WagonPassportDto::addWagonPassportDto);
+        }
+        return Optional.empty();
+    }
+
     public boolean addWagonPassport(WagonPassportDto wagonPassportDto) {
         var id = wagonPassportRepository.save(WagonPassportEntity.addWagonPassport(wagonPassportDto)).getId();
         return wagonPassportRepository.existsById(id);
@@ -56,6 +67,5 @@ public class WagonPassportService {
         }
         return exist;
     }
-
 
 }
