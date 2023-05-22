@@ -7,8 +7,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.usertype.LoggableUserType;
 import ru.sobinda.RZDInterview.entity.FullScaleEntity;
 import ru.sobinda.RZDInterview.entity.ScaleEntity;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -25,12 +28,20 @@ public class FullScaleDto {
 
     //Список вагонов, которые принадлежат составу
     @JsonProperty("scale_id")
-    private List<ScaleEntity> scales;
+    private List<ScaleDto> scales;
 
     public static FullScaleDto addFullScale(FullScaleEntity fullScaleEntity) {
         return FullScaleDto.builder()
                 .compositionNumber(fullScaleEntity.getCompositionNumber())
-                .scales(fullScaleEntity.getScales())
+                .scales(getScaleDto(fullScaleEntity.getScales()))
                 .build();
+    }
+
+    public static List<ScaleDto> getScaleDto(List<ScaleEntity> scaleEntities) {
+        List<ScaleDto> dtos = new ArrayList<>();
+        for (ScaleEntity scaleEntity : scaleEntities) {
+            dtos.add(ScaleDto.addScale(scaleEntity));
+        }
+        return dtos;
     }
 }
