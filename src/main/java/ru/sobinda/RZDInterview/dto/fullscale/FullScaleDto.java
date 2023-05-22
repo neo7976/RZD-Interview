@@ -1,4 +1,4 @@
-package ru.sobinda.RZDInterview.dto;
+package ru.sobinda.RZDInterview.dto.fullscale;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.usertype.LoggableUserType;
+import ru.sobinda.RZDInterview.dto.scale.ScaleDto;
 import ru.sobinda.RZDInterview.entity.FullScaleEntity;
 import ru.sobinda.RZDInterview.entity.ScaleEntity;
 

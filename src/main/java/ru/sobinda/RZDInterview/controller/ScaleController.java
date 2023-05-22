@@ -8,8 +8,8 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.sobinda.RZDInterview.dto.ScaleCreateDto;
-import ru.sobinda.RZDInterview.dto.ScaleDto;
+import ru.sobinda.RZDInterview.dto.scale.ScaleCreateDto;
+import ru.sobinda.RZDInterview.dto.scale.ScaleDto;
 import ru.sobinda.RZDInterview.service.ScaleService;
 
 import java.util.List;

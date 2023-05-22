@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.sobinda.RZDInterview.dto.ScaleCreateDto;
+import ru.sobinda.RZDInterview.dto.scale.ScaleCreateDto;
 import ru.sobinda.RZDInterview.dto.WagonPassportDto;
 
 import javax.persistence.*;
@@ -29,7 +29,7 @@ public class ScaleEntity {
     private Integer id;
 
     //Порядковый номер
-    @Column(name = "serial_number", unique = true)
+    @Column(name = "serial_number")
     private Integer serialNumber;
 
     //Номер вагона

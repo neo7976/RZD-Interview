@@ -2,8 +2,8 @@ package ru.sobinda.RZDInterview.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.sobinda.RZDInterview.dto.ScaleCreateDto;
-import ru.sobinda.RZDInterview.dto.ScaleDto;
+import ru.sobinda.RZDInterview.dto.scale.ScaleCreateDto;
+import ru.sobinda.RZDInterview.dto.scale.ScaleDto;
 import ru.sobinda.RZDInterview.entity.DirectoryOfCargoNomenclaturesEntity;
 import ru.sobinda.RZDInterview.entity.ScaleEntity;
 import ru.sobinda.RZDInterview.entity.WagonPassportEntity;
@@ -13,6 +13,7 @@ import ru.sobinda.RZDInterview.repository.ScaleRepository;
 import ru.sobinda.RZDInterview.repository.WagonPassportRepository;
 
 import javax.transaction.Transactional;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -36,8 +37,6 @@ public class ScaleService {
     public boolean addScale(ScaleCreateDto scaleCreateDto) {
         var wagonId = getWagonPassport(scaleCreateDto);
         var listDirectory = getNomenclaturesEntities(scaleCreateDto);
-        if (listDirectory == null)
-            return false;
         var id = scaleRepository.save(ScaleEntity.addScale(scaleCreateDto, wagonId, listDirectory)).getId();
         return scaleRepository.existsById(id);
     }
@@ -81,7 +80,7 @@ public class ScaleService {
     private List<DirectoryOfCargoNomenclaturesEntity> getNomenclaturesEntities(ScaleCreateDto scaleCreateDto) {
         var listDirectory = directoryRepository.findAllById(scaleCreateDto.getNomenclatures());
         if (listDirectory.isEmpty()) {
-            return null;
+            return Collections.emptyList();
         }
         return listDirectory;
     }

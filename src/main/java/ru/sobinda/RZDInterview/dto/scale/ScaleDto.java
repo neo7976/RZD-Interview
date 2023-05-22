@@ -1,4 +1,4 @@
-package ru.sobinda.RZDInterview.dto;
+package ru.sobinda.RZDInterview.dto.scale;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import ru.sobinda.RZDInterview.dto.DirectoryOfCargoNomenclaturesDto;
+import ru.sobinda.RZDInterview.dto.WagonPassportDto;
 import ru.sobinda.RZDInterview.entity.DirectoryOfCargoNomenclaturesEntity;
 import ru.sobinda.RZDInterview.entity.ScaleEntity;
 import ru.sobinda.RZDInterview.entity.WagonPassportEntity;
