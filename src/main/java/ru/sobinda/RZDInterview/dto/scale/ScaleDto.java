@@ -1,4 +1,4 @@
-package ru.sobinda.RZDInterview.dto;
+package ru.sobinda.RZDInterview.dto.scale;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -7,11 +7,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import ru.sobinda.RZDInterview.dto.DirectoryOfCargoNomenclaturesDto;
+import ru.sobinda.RZDInterview.dto.WagonPassportDto;
 import ru.sobinda.RZDInterview.entity.DirectoryOfCargoNomenclaturesEntity;
 import ru.sobinda.RZDInterview.entity.ScaleEntity;
 import ru.sobinda.RZDInterview.entity.WagonPassportEntity;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -31,13 +34,13 @@ public class ScaleDto {
     private BigDecimal wagonWeight;
     @JsonProperty("wagon_number")
     private WagonPassportDto wagonPassport;
-    private List<DirectoryOfCargoNomenclaturesEntity> nomenclatures;
+    private List<DirectoryOfCargoNomenclaturesDto> nomenclatures;
 
     public static ScaleDto addScale(ScaleEntity scale) {
                 return ScaleDto.builder()
                 .serialNumber(scale.getSerialNumber())
                 .wagonPassport(getWagonPassportDto(scale.getWagonPassport()))
-                .nomenclatures(scale.getNomenclatures())
+                .nomenclatures(getNomenclaturesDto(scale.getNomenclatures()))
                 .cargoWeight(scale.getCargoWeight())
                 .wagonWeight(scale.getWagonWeight())
                 .build();
@@ -45,5 +48,15 @@ public class ScaleDto {
     }
     public static WagonPassportDto getWagonPassportDto(WagonPassportEntity wagonPassportEntity) {
         return WagonPassportDto.addWagonPassportDto(wagonPassportEntity);
+    }
+
+    public static List<DirectoryOfCargoNomenclaturesDto> getNomenclaturesDto(
+            List<DirectoryOfCargoNomenclaturesEntity> directoryList
+    ) {
+        List<DirectoryOfCargoNomenclaturesDto> dtoList = new ArrayList<>();
+        for (DirectoryOfCargoNomenclaturesEntity directoryEntity : directoryList) {
+            dtoList.add(DirectoryOfCargoNomenclaturesDto.addDirectoryOfCargoNomenclatures(directoryEntity));
+        }
+        return dtoList;
     }
 }

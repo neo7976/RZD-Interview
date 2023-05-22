@@ -1,14 +1,16 @@
 package ru.sobinda.RZDInterview.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import ru.sobinda.RZDInterview.dto.FullScaleDto;
+import org.springframework.web.bind.annotation.*;
+import ru.sobinda.RZDInterview.dto.fullscale.FullScaleCreateDto;
+import ru.sobinda.RZDInterview.dto.fullscale.FullScaleDto;
+import ru.sobinda.RZDInterview.dto.scale.ScaleCreateDto;
 import ru.sobinda.RZDInterview.service.FullScaleService;
 
 import java.util.List;
@@ -16,6 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("full_scale/")
 @RequiredArgsConstructor
+@Log4j2
 @Tag(name = "Список составов поездов", description = "CRUD FullScale")
 public class FullScaleController {
 
@@ -26,5 +29,49 @@ public class FullScaleController {
     public ResponseEntity<List<FullScaleDto>> getAll() {
         var result = fullScaleService.getAllFullScale();
         return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @GetMapping("id/{id}")
+    @Operation(summary = "Получить поезд с составами по id")
+    public ResponseEntity<FullScaleDto> getFullScaleById(
+            @Parameter(description = "Уникальный параметр")
+            @PathVariable("id") Integer id) {
+        var result = fullScaleService.getFullScaleById(id);
+        return result.map(
+                        fullScaleDto -> new ResponseEntity<>(
+                                fullScaleDto, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.BAD_REQUEST));
+    }
+
+    @PostMapping("add")
+    @Operation(summary = "Добавить новый поезд с составами")
+    public ResponseEntity<Void> addFullScale(@RequestBody FullScaleCreateDto fullScaleDto) {
+        log.info("Запрос на добавление нового поезда: {}", fullScaleDto.getCompositionNumber());
+        if (fullScaleService.addFullScale(fullScaleDto))
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @PutMapping("id/{id}")
+    @Operation(summary = "Обновить поезд с составами по id")
+    public ResponseEntity<Void> updateFullScale(
+            @Parameter(description = "Уникальный параметр")
+            @PathVariable("id") Integer id,
+            @RequestBody FullScaleCreateDto fullScaleCreateDto) {
+        log.info("Запрос на изменение поезда с составами по {}: {}", "id", id);
+        if (fullScaleService.updateFullScaleById(id, fullScaleCreateDto))
+            return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    }
+
+    @Operation(summary = "Удалить поезд с составами по id")
+    @DeleteMapping("id/{id}")
+    public ResponseEntity<Void> deleteFullScaleById(
+            @Parameter(description = "Уникальный параметр")
+            @PathVariable("id") Integer id) {
+        log.info("Запрос на удаление поезда с составами по {}: {}", "id", id);
+        if (fullScaleService.deleteFullScaleById(id))
+            return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 }

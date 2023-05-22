@@ -1,4 +1,4 @@
-package ru.sobinda.RZDInterview.dto;
+package ru.sobinda.RZDInterview.dto.scale;
 
 
 import com.fasterxml.jackson.annotation.JsonInclude;
