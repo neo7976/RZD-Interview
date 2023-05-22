@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.sobinda.RZDInterview.dto.fullscale.FullScaleCreateDto;
 import ru.sobinda.RZDInterview.dto.fullscale.FullScaleDto;
-import ru.sobinda.RZDInterview.dto.scale.ScaleCreateDto;
 import ru.sobinda.RZDInterview.service.FullScaleService;
 
 import java.util.List;

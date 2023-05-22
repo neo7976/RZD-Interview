@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import ru.sobinda.RZDInterview.dto.WagonPassportDto;
 import ru.sobinda.RZDInterview.service.WagonPassportService;
@@ -32,6 +33,7 @@ public class WagonPassportController {
     }
 
     @GetMapping("number/{number}")
+    @Secured("ROLE_USER")
     @Operation(summary = "Получить список WagonPassport по номеру")
     public ResponseEntity<WagonPassportDto> getWagonPassportByNumber(
             @Parameter(description = "Номер вагона")
@@ -43,6 +45,7 @@ public class WagonPassportController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.BAD_REQUEST));
     }
 
+    @Secured("ROLE_ADMIN")
     @GetMapping("all")
     @Operation(summary = "Получить список всех WagonPassport")
     public ResponseEntity<List<WagonPassportDto>> getAllWagonPassport() {
