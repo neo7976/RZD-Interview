@@ -45,7 +45,7 @@ services:
     - rzd-service, Java 11 на порту: ```http://localhost:8085```;
     - zrd-postgres на порту: ```http://localhost:5432```;
 - Получаем следующие образы, если правильно проделали шаги запуска:
-  ![Swagger5](src/main/resources/imgs/Screenshot_5.png)
+  ![Docker1](src/main/resources/imgs/Screenshot_5.png)
 
 
 ### Завершение работы

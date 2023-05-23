@@ -20,6 +20,7 @@ public class DirectoryOfCargoNomenclaturesService {
 
     public List<DirectoryOfCargoNomenclaturesDto> getAllNomenclatures() {
         var list = directoryRepository.findAll();
+        log.info("Наличие списка номенклатуры в запросе: {}", !list.isEmpty() );
         return list.stream()
                 .map(DirectoryOfCargoNomenclaturesDto::addDirectoryOfCargoNomenclatures)
                 .collect(Collectors.toList());
@@ -27,6 +28,7 @@ public class DirectoryOfCargoNomenclaturesService {
 
     public Optional<DirectoryOfCargoNomenclaturesDto> getNomenclatureById(Integer id) {
         var exist = directoryRepository.existsById(id);
+        log.info("Наличие номенклатуры по {}={} : {}", "id", id, exist);
         if (exist) {
             return directoryRepository.findById(id)
                     .map(DirectoryOfCargoNomenclaturesDto::addDirectoryOfCargoNomenclatures);
@@ -36,6 +38,7 @@ public class DirectoryOfCargoNomenclaturesService {
 
     public Optional<DirectoryOfCargoNomenclaturesDto> getNomenclatureByName(String name) {
         var exist = directoryRepository.existsByShippingNameIgnoreCase(name);
+        log.info("Наличие номенклатуры по {}={} : {}", "name", name, exist);
         if (exist) {
             return directoryRepository.findByShippingNameIgnoreCase(name)
                     .map(DirectoryOfCargoNomenclaturesDto::addDirectoryOfCargoNomenclatures);
@@ -45,6 +48,7 @@ public class DirectoryOfCargoNomenclaturesService {
 
     public Optional<DirectoryOfCargoNomenclaturesDto> getNomenclatureByCode(String code) {
         var exist = directoryRepository.existsByCode(code);
+        log.info("Наличие номенклатуры по {}={} : {}", "code", code, exist);
         if (exist) {
             return directoryRepository.findByCode(code)
                     .map(DirectoryOfCargoNomenclaturesDto::addDirectoryOfCargoNomenclatures);
@@ -55,11 +59,13 @@ public class DirectoryOfCargoNomenclaturesService {
     public boolean addNomenclature(DirectoryOfCargoNomenclaturesDto directory) {
         var id = directoryRepository.save(DirectoryOfCargoNomenclaturesEntity
                 .addDirectoryOfCargoNomenclatures(directory)).getId();
+        log.info("Сохранение номенклатуры под {}={}", "id", id);
         return directoryRepository.existsById(id);
     }
 
     public boolean updateNomenclatureById(Integer id, DirectoryOfCargoNomenclaturesDto directoryDto) {
         var item = directoryRepository.existsById(id);
+        log.info("Изменение номенклатуры под {}={}", "id", id);
         if (item) {
             var result = directoryRepository.findById(id)
                     .map(
@@ -73,6 +79,7 @@ public class DirectoryOfCargoNomenclaturesService {
 
     public boolean deleteNomenclatureById(Integer id) {
         var exist = directoryRepository.existsById(id);
+        log.info("Наличие номенклатуры под {}={} для удаления", "id", id);
         if (exist) {
             directoryRepository.deleteById(id);
         }
