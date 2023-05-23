@@ -28,6 +28,7 @@ public class FullScaleController {
     @Secured({"ROLE_ADMIN", "ROLE_USER", "ROLE_GUEST"})
     @GetMapping("all")
     public ResponseEntity<List<FullScaleDto>> getAll() {
+        log.info("Запрос на получение всех поездов");
         var result = fullScaleService.getAllFullScale();
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
@@ -38,6 +39,7 @@ public class FullScaleController {
     public ResponseEntity<FullScaleDto> getFullScaleById(
             @Parameter(description = "Уникальный параметр")
             @PathVariable("id") Integer id) {
+        log.info("Запрос на получение состава поезда по {}={}", "id", id);
         var result = fullScaleService.getFullScaleById(id);
         return result.map(
                         fullScaleDto -> new ResponseEntity<>(
@@ -58,7 +60,7 @@ public class FullScaleController {
     @PutMapping("id/{id}")
     @Secured({"ROLE_ADMIN", "ROLE_USER"})
     @Operation(summary = "Обновить поезд с составами по id")
-    public ResponseEntity<Void> updateFullScale(
+    public ResponseEntity<Void> updateFullScaleById(
             @Parameter(description = "Уникальный параметр")
             @PathVariable("id") Integer id,
             @RequestBody FullScaleCreateDto fullScaleCreateDto) {
