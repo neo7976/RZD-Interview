@@ -16,14 +16,14 @@ public class StationService {
 
     private final StationRepository stationRepository;
 
-    public List<StationDto> getAllWagonPassport() {
+    public List<StationDto> getAllStations() {
         var list = stationRepository.findAll();
         return list.stream()
                 .map(StationDto::addStationDto)
                 .collect(Collectors.toList());
     }
 
-    public Optional<StationDto> getStation(Integer id) {
+    public Optional<StationDto> getStationById(Integer id) {
         var exist = stationRepository.existsById(id);
         if (exist) {
             return stationRepository.findById(id)

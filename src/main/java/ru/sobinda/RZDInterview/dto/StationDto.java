@@ -3,19 +3,18 @@ package ru.sobinda.RZDInterview.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import ru.sobinda.RZDInterview.entity.StationEntity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Getter
+@ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Schema(description = "Информация о станции")
 public class StationDto {
@@ -38,5 +37,18 @@ public class StationDto {
             stringList.add(String.format("Путь №%d", number));
         }
         return stringList;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        StationDto that = (StationDto) o;
+        return stationName.equals(that.stationName) && number.equals(that.number);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(stationName, number);
     }
 }

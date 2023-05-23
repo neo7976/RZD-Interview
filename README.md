@@ -1,4 +1,6 @@
-## 1. Docker-compose для запуска БД
+## 1. Запуск проекта
+
+- Для сборки образа проекта используется следующий docker-compose:
 
 ```yaml
 version: "3.8"
@@ -16,9 +18,39 @@ services:
     volumes:
       - ./postgresql/init.sql:/docker-entrypoint-initdb.d/init.sql
 
-```
+  rzd-service:
+    depends_on:
+      - zrd-postgres
+    build: /
+    container_name: "rzd-service"
+    ports:
+      - 8085:8085
+    environment:
+      - POSTGRES_HOST=zrd-postgres
+      - POSTGRES_DB=rzd-postgres
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_PORT=5432
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=validate
+    restart: on-failure
 
-- Для запуска используем `docker-compose up`
+```
+1. Первым делом нам надо собрать jar архивы с нашими spring boot приложениями. Для этого в терминале в корне нашего проект выполните команду:
+
+Для gradle: `./gradlew clean build` (если пишет Permission denied тогда сначала выполните `chmod +x ./gradlew`)
+
+- После успешной сборки в папке будет находиться jar файл:`RZD-Interview-0.0.1-SNAPSHOT.jar`;
+- В терминале выполнить команду по сборке images и containers: ```docker-compose up```;
+- В докере запустятся 2 приложения:
+    - rzd-service, Java 11 на порту: ```http://localhost:8085```;
+    - zrd-postgres на порту: ```http://localhost:5432```;
+- Получаем следующие образы, если правильно проделали шаги запуска:
+  ![Docker1](src/main/resources/imgs/Screenshot_5.png)
+
+
+### Завершение работы
+- Выход из приложения: в терминале нажать "Ctrl+C"
+- Удаление Docker контейнера: ```docker-compose down```
 
 ## 2. Авторизация
 
@@ -34,7 +66,7 @@ Olga    -   Olga1234    ADMIN
 
 ## 3. Настройка OpenAPI definition
 
-- Для доступа требуется перейти по следующем ссылкам
+- Для доступа требуется перейти по одной из следующих ссылок и авторизоваться в системе *(см. пункт 2)*.
 
 http://localhost:8085/swagger-ui/index.html
 
@@ -222,8 +254,25 @@ where id = 3;
 
 ```
 
+## 5. Создание порядка номерации вагонов при добавление в состав
 
-## 5. CRUD операции для Контролеров написаны в следующем стиле:
+```java
+    @Transactional
+    @Modifying
+    @Query(value = "UPDATE scale " +
+            "SET serial_number = COALESCE((SELECT MAX(serial_number) FROM scale WHERE scale_id = :scale_id), 0) + CAST(row_number AS int) " +
+            "FROM ( " +
+            "  SELECT id, ROW_NUMBER() OVER (ORDER BY id) AS row_number " +
+            "  FROM scale " +
+            "  WHERE scale_id = :scale_id AND serial_number IS NULL " +
+            ") AS subquery " +
+            "WHERE scale.id = subquery.id", nativeQuery = true)
+    void updateSerialNumber(@Param("scale_id") Integer scaleId);
+
+```
+
+
+## 6. CRUD операции для Контролеров написаны в следующем стиле:
 
 ```java
 
@@ -301,6 +350,220 @@ public class WagonPassportController {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 }
+```
+
+## 7. Тесты для Контролеров написаны в следующем стиле:
+
+```java
+@ExtendWith(MockitoExtension.class)
+class WagonPassportControllerTest {
+
+  @Mock
+  WagonPassportService wagonPassportService;
+
+  @InjectMocks
+  WagonPassportController wagonPassportController;
+  private final int ID = 1;
+  private final int NUMBER = 1111;
+  WagonPassportDto wagonPassportDto;
+
+
+
+  @BeforeEach
+  void setUp() {
+    System.out.println(Strings.repeat("-", 100));
+    System.out.println("Начало теста");
+    wagonPassportDto = WagonPassportDto.builder()
+            .number(NUMBER)
+            .type(WagonType.COVERED1)
+            .build();
+  }
+
+  @AfterEach
+  void tearDown() {
+    wagonPassportDto = null;
+    System.out.println("Окончание теста");
+    System.out.println(Strings.repeat("-", 100));
+  }
+
+  @Test
+  void getWagonPassportOk() {
+    when(wagonPassportService.getWagonPassport(ID))
+            .thenReturn(Optional.of(wagonPassportDto));
+    var result = wagonPassportController.getWagonPassport(ID);
+    assertEquals(new ResponseEntity<>(wagonPassportDto,HttpStatus.OK), result);
+  }
+  @Test
+  void getWagonPassportBad() {
+    when(wagonPassportService.getWagonPassport(ID))
+            .thenReturn(Optional.empty());
+    var result = wagonPassportController.getWagonPassport(ID);
+    assertEquals( new ResponseEntity<>(HttpStatus.BAD_REQUEST), result);
+  }
+
+
+  @Test
+  void getWagonPassportByNumberOk() {
+    when(wagonPassportService.getWagonPassportByNumber(NUMBER))
+            .thenReturn(Optional.of(wagonPassportDto));
+    var result = wagonPassportController.getWagonPassportByNumber(NUMBER);
+    assertEquals(new ResponseEntity<>(wagonPassportDto,HttpStatus.OK), result);
+  }
+
+  @Test
+  void getWagonPassportByNumberBad() {
+    when(wagonPassportService.getWagonPassportByNumber(NUMBER))
+            .thenReturn(Optional.empty());
+    var result = wagonPassportController.getWagonPassportByNumber(NUMBER);
+    assertEquals( new ResponseEntity<>(HttpStatus.BAD_REQUEST), result);
+  }
+
+  @Test
+  void getAllWagonPassportOk() {
+    when(wagonPassportService.getAllWagonPassport())
+            .thenReturn(List.of(wagonPassportDto));
+    var result = wagonPassportController.getAllWagonPassport();
+    assertEquals(new ResponseEntity<>(List.of(wagonPassportDto),HttpStatus.OK), result);
+  }
+
+  @Test
+  void addWagonPassportOk() {
+    when(wagonPassportService.addWagonPassport(wagonPassportDto))
+            .thenReturn(true);
+    var result = wagonPassportController.addWagonPassport(wagonPassportDto);
+    assertEquals(new ResponseEntity<>(HttpStatus.CREATED), result);
+  }
+
+  @Test
+  void addWagonPassportBad() {
+    when(wagonPassportService.addWagonPassport(wagonPassportDto))
+            .thenReturn(false);
+    var result = wagonPassportController.addWagonPassport(wagonPassportDto);
+    assertEquals(new ResponseEntity<>(HttpStatus.NOT_FOUND), result);
+  }
+
+  @Test
+  void updateWagonPassportOk() {
+    when(wagonPassportService.updateWagonPassport(ID, wagonPassportDto))
+            .thenReturn(true);
+    var result = wagonPassportController.updateWagonPassport(ID, wagonPassportDto);
+    assertEquals(new ResponseEntity<>(HttpStatus.ACCEPTED), result);
+  }
+  @Test
+  void updateWagonPassportBad() {
+    when(wagonPassportService.updateWagonPassport(ID, wagonPassportDto))
+            .thenReturn(false);
+    var result = wagonPassportController.updateWagonPassport(ID, wagonPassportDto);
+    assertEquals(new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED), result);
+  }
+
+  @Test
+  void deleteWagonPassportOk() {
+    when(wagonPassportService.deleteWagonPassport(ID))
+            .thenReturn(true);
+    var result = wagonPassportController.deleteWagonPassport(ID);
+    assertEquals(new ResponseEntity<>(HttpStatus.OK), result);
+  }
+
+  @Test
+  void deleteWagonPassportBad() {
+    when(wagonPassportService.deleteWagonPassport(ID))
+            .thenReturn(false);
+    var result = wagonPassportController.deleteWagonPassport(ID);
+    assertEquals(new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED), result);
+  }
+}
+
+```
+
+## 8. Тесты для Сервисов написаны в следующем стиле:
+
+```java
+
+@ExtendWith(MockitoExtension.class)
+class WagonPassportServiceTest {
+
+    @InjectMocks
+    WagonPassportService wagonPassportService;
+
+    @Mock
+    WagonPassportRepository wagonPassportRepository;
+
+    private final int ID = 1;
+    private final int NUMBER = 1111;
+    WagonPassportDto wagonPassportDto;
+    WagonPassportEntity wagonPassportEntity;
+
+    @BeforeEach
+    void setUp() {
+        System.out.println(Strings.repeat("-", 100));
+        System.out.println("Начало теста");
+        wagonPassportDto = WagonPassportDto.builder()
+                .number(NUMBER)
+                .loadCapacity(WagonType.COVERED1.getLoadCapacity())
+                .tareWeight(WagonType.COVERED1.getTareWeight())
+                .type(WagonType.COVERED1)
+                .build();
+
+        wagonPassportEntity = WagonPassportEntity.addWagonPassport(wagonPassportDto);
+    }
+
+    @AfterEach
+    void tearDown() {
+        wagonPassportDto = null;
+        wagonPassportEntity = null;
+        System.out.println("Окончание теста");
+        System.out.println(Strings.repeat("-", 100));
+    }
+
+    @Test
+    void getWagonPassportOk() {
+        when(wagonPassportRepository.existsById(ID))
+                .thenReturn(true);
+        when(wagonPassportRepository.findById(ID))
+                .thenReturn(Optional.of(wagonPassportEntity));
+
+        var result = wagonPassportService.getWagonPassport(ID);
+        Assertions.assertEquals(Optional.of(wagonPassportDto), result);
+    }
+
+    @Test
+    void getWagonPassportBad() {
+        when(wagonPassportRepository.existsById(ID))
+                .thenReturn(false);
+
+        var result = wagonPassportService.getWagonPassport(ID);
+        Assertions.assertEquals(Optional.empty(), result);
+    }
+
+    @Test
+    void getWagonPassportByNumberOk() {
+        when(wagonPassportRepository.existsByNumber(NUMBER))
+                .thenReturn(true);
+        when(wagonPassportRepository.findByNumber(NUMBER))
+                .thenReturn(Optional.of(wagonPassportEntity));
+        var result = wagonPassportService.getWagonPassportByNumber(NUMBER);
+        assertEquals(Optional.of(wagonPassportDto), result);
+    }
+
+    @Test
+    void getWagonPassportByNumberBad() {
+        when(wagonPassportRepository.existsByNumber(NUMBER))
+                .thenReturn(false);
+        var result = wagonPassportService.getWagonPassportByNumber(NUMBER);
+        assertEquals(Optional.empty(), result);
+    }
+
+    @Test
+    void getAllWagonPassport() {
+        when(wagonPassportRepository.findAll())
+                .thenReturn(List.of(wagonPassportEntity));
+
+        var result = wagonPassportService.getAllWagonPassport();
+        assertEquals(List.of(wagonPassportDto), result);
+    }
+}
+
 ```
 
 
